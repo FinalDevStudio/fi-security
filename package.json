@@ -1,7 +1,7 @@
 {
   "name": "fi-security",
-  "title": "Fi Auth",
-  "description": "Route authorization module for Node.js Express apps",
+  "title": "Fi Security",
+  "description": "Security component for Node.js Express applications",
   "version": "1.0.0",
   "private": false,
   "license": "MIT",
@@ -36,14 +36,19 @@
   "homepage": "https://github.com/finaldevstudio/fi-security#readme",
   "main": "index.js",
   "keywords": [
-    "security",
     "component",
+    "security",
     "express",
+    "exclude",
     "fi-seed",
-    "route",
-    "auth",
+    "x-frame",
+    "xframe",
+    "lusca",
     "xsrf",
+    "hsts",
     "csrf",
-    "csp"
+    "csp",
+    "p3p",
+    "xss"
   ]
 }
