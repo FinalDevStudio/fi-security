@@ -31,9 +31,6 @@ var config = {
   },
 
   csp: {
-    /* TODO: Implement this CSP reporter url*/
-    reportUri: 'https://example.com/csp-reporter',
-
     policy: {
       'default-src': "'self'"
     }
