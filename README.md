@@ -35,7 +35,6 @@ The configuration `Object` must be pretty much like a [lusca](https://github.com
   - **exclude**: An array of routes with it's method and path to be excluded from `CSRF` checks:
     - **method**: A single `POST`, `PUT` or `DELETE` method or an array of them. Empty means `ALL`.
     - **path**: A valid [Express path](http://expressjs.com/en/guide/routing.html#route-paths) to be excluded from the `CSRF` check.
-
 - **csp**: Same as [lusca](https://github.com/krakenjs/lusca#luscacspoptions).
 - **xframe**: Same as [lusca](https://github.com/krakenjs/lusca#luscaxframevalue).
 - **p3p**: Same as [lusca](https://github.com/krakenjs/lusca#luscap3pvalue).
