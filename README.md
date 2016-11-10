@@ -1,5 +1,5 @@
 # Fi Security
-Route authorization module for Node.js Express applications.
+Application security module for Node.js Express applications.
 
 ## Installing
 
