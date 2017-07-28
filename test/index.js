@@ -2,11 +2,11 @@
 
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var base64url = require('base64url');
+var expect = require('chai').expect;
 var request = require('request');
 var express = require('express');
-var expect = require('chai').expect;
 var security = require('../lib');
-var base64url = require('base64url');
 var crypto = require('crypto');
 
 var csrfToken = null;
@@ -32,18 +32,21 @@ var config = {
 
   csp: {
     policy: {
-      'default-src': "'self'"
+      'default-src': '\'self\''
     }
   },
 
   hsts: {
     includeSubDomains: true,
     maxAge: 31536000
-  }
+  },
+
+  nosniff: true
 
 };
 
 describe('Fi Security', function () {
+
   before(function (done) {
     /* Create the express app */
     var app = express();
@@ -69,27 +72,28 @@ describe('Fi Security', function () {
     security(app, config);
 
     /* Now declare the routes */
-    app.get('/', function (req, res) {
+    app.get('/', (req, res) => {
       res.send(res.locals._csrf);
     });
 
-    app.post('/', function (req, res) {
+    app.post('/', (req, res) => {
       res.status(204).end();
     });
 
-    app.post('/no-csrf', function (req, res) {
+    app.post('/no-csrf', (req, res) => {
       res.status(204).end();
     });
 
     /* Error handler */
-    app.use(function (err, req, res, next) {
-      console.log("\n");
-      console.error("   ", err);
-      console.log("");
+    app.use((err, req, res, next) => { // eslint-disable-line
+      console.log('\n');
+      console.error('   ', err);
+      console.log('');
+
       res.end();
     });
 
-    var server = app.listen(0, function () {
+    var server = app.listen(0, () => {
       /* Initialize the request object */
       request = request.defaults({
         baseUrl: 'http://localhost:' + server.address().port,
@@ -101,15 +105,17 @@ describe('Fi Security', function () {
   });
 
   describe('object', function () {
+
     it('should be a function', function () {
       expect(security).to.be.a('function');
     });
+
   });
 
   describe('server', function () {
 
     it('should respond a 200 status code and "Hello Word!" as body', function (done) {
-      request('/', function (err, res, body) {
+      request('/', (err, res, body) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
@@ -127,7 +133,7 @@ describe('Fi Security', function () {
   describe('requests', function () {
     it('should respond with a 403 status code when a POST to "/" is made without a CSRF token', function (done) {
 
-      request.post('/', function (err, res, body) {
+      request.post('/', (err, res) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
@@ -143,7 +149,7 @@ describe('Fi Security', function () {
         form: {
           _csrf: csrfToken
         }
-      }, function (err, res, body) {
+      }, (err, res) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
@@ -159,7 +165,7 @@ describe('Fi Security', function () {
         headers: {
           'x-csrf-token': csrfToken
         }
-      }, function (err, res, body) {
+      }, (err, res) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
@@ -170,7 +176,7 @@ describe('Fi Security', function () {
     });
 
     it('should respond with a 204 status code when a POST to "/no-csrf" is made without a CSRF token', function (done) {
-      request.post('/no-csrf', function (err, res, body) {
+      request.post('/no-csrf', (err, res) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
