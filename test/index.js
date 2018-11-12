@@ -1,27 +1,26 @@
 'use strict';
 
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var base64url = require('base64url');
-var expect = require('chai').expect;
-var request = require('request');
-var express = require('express');
-var security = require('../lib');
-var crypto = require('crypto');
-
-var csrfToken = null;
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const base64url = require('base64url');
+const expect = require('chai').expect;
+const request = require('request');
+const express = require('express');
+const security = require('../lib');
+const crypto = require('crypto');
 
 /* The Security component configuration */
-var config = {
-
+const config = {
   debug: true,
 
   p3p: 'ABCDEF',
 
   csrf: {
-    exclude: [{
-      path: '/no-csrf'
-    }]
+    exclude: [
+      {
+        path: '/no-csrf'
+      }
+    ]
   },
 
   xframe: 'DENY',
@@ -32,7 +31,7 @@ var config = {
 
   csp: {
     policy: {
-      'default-src': '\'self\''
+      'default-src': "'self'"
     }
   },
 
@@ -42,31 +41,35 @@ var config = {
   },
 
   nosniff: true
-
 };
 
-describe('Fi Security', function () {
+describe('Fi Security', function() {
+  let $server, $http, $token;
 
-  before(function (done) {
+  before(function(done) {
     /* Create the express app */
-    var app = express();
+    const app = express();
 
     /* Body parser first */
-    app.use(bodyParser.urlencoded({
-      extended: false
-    }));
+    app.use(
+      bodyParser.urlencoded({
+        extended: false
+      })
+    );
 
     app.use(bodyParser.json());
 
     /* Initialize the session before anything else */
-    app.use(session({
-      secret: base64url(crypto.randomBytes(48)),
-      saveUninitialized: true,
-      resave: true,
-      cookie: {
-        secure: false
-      }
-    }));
+    app.use(
+      session({
+        secret: base64url(crypto.randomBytes(48)),
+        saveUninitialized: true,
+        resave: true,
+        cookie: {
+          secure: false
+        }
+      })
+    );
 
     /* Initialize the Security component before any route declaration */
     security(app, config);
@@ -77,15 +80,16 @@ describe('Fi Security', function () {
     });
 
     app.post('/', (req, res) => {
-      res.status(204).end();
+      res.sendStatus(204);
     });
 
     app.post('/no-csrf', (req, res) => {
-      res.status(204).end();
+      res.sendStatus(204);
     });
 
     /* Error handler */
-    app.use((err, req, res, next) => { // eslint-disable-line
+    app.use((err, req, res, next) => {
+      // eslint-disable-line
       console.log('\n');
       console.error('   ', err);
       console.log('');
@@ -93,10 +97,10 @@ describe('Fi Security', function () {
       res.end();
     });
 
-    var server = app.listen(0, () => {
+    $server = app.listen(0, () => {
       /* Initialize the request object */
-      request = request.defaults({
-        baseUrl: 'http://localhost:' + server.address().port,
+      $http = request.defaults({
+        baseUrl: 'http://localhost:' + $server.address().port,
         jar: true
       });
 
@@ -104,18 +108,19 @@ describe('Fi Security', function () {
     });
   });
 
-  describe('object', function () {
-
-    it('should be a function', function () {
-      expect(security).to.be.a('function');
-    });
-
+  after(() => {
+    $server.close();
   });
 
-  describe('server', function () {
+  describe('object', function() {
+    it('should be a function', function() {
+      expect(security).to.be.a('function');
+    });
+  });
 
-    it('should respond a 200 status code and "Hello Word!" as body', function (done) {
-      request('/', (err, res, body) => {
+  describe('server', function() {
+    it('should respond a 200 status code and "Hello Word!" as body', function(done) {
+      $http.get('/', (err, res, body) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
@@ -123,17 +128,16 @@ describe('Fi Security', function () {
 
         expect(body).to.be.a('string');
 
-        csrfToken = body;
+        $token = body;
 
         done();
       });
     });
   });
 
-  describe('requests', function () {
-    it('should respond with a 403 status code when a POST to "/" is made without a CSRF token', function (done) {
-
-      request.post('/', (err, res) => {
+  describe('requests', function() {
+    it('should respond with a 403 status code when a POST to "/" is made without a CSRF token', function(done) {
+      $http.post('/', (err, res) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
@@ -143,40 +147,46 @@ describe('Fi Security', function () {
       });
     });
 
-    it('should respond with a 204 status code when a POST to "/" is made with a CSRF token as form data', function (done) {
-      request.post({
-        uri: '/',
-        form: {
-          _csrf: csrfToken
+    it('should respond with a 204 status code when a POST to "/" is made with a CSRF token as form data', function(done) {
+      $http.post(
+        {
+          uri: '/',
+          form: {
+            _csrf: $token
+          }
+        },
+        (err, res) => {
+          expect(err).to.be.null;
+
+          expect(res.statusCode).to.be.a('number');
+          expect(res.statusCode).to.equal(204);
+
+          done();
         }
-      }, (err, res) => {
-        expect(err).to.be.null;
-
-        expect(res.statusCode).to.be.a('number');
-        expect(res.statusCode).to.equal(204);
-
-        done();
-      });
+      );
     });
 
-    it('should respond with a 204 status code when a POST to "/" is made with a CSRF token as header param', function (done) {
-      request.post({
-        uri: '/',
-        headers: {
-          'x-csrf-token': csrfToken
+    it('should respond with a 204 status code when a POST to "/" is made with a CSRF token as header param', function(done) {
+      $http.post(
+        {
+          uri: '/',
+          headers: {
+            'csrf-token': $token
+          }
+        },
+        (err, res) => {
+          expect(err).to.be.null;
+
+          expect(res.statusCode).to.be.a('number');
+          expect(res.statusCode).to.equal(204);
+
+          done();
         }
-      }, (err, res) => {
-        expect(err).to.be.null;
-
-        expect(res.statusCode).to.be.a('number');
-        expect(res.statusCode).to.equal(204);
-
-        done();
-      });
+      );
     });
 
-    it('should respond with a 204 status code when a POST to "/no-csrf" is made without a CSRF token', function (done) {
-      request.post('/no-csrf', (err, res) => {
+    it('should respond with a 204 status code when a POST to "/no-csrf" is made without a CSRF token', function(done) {
+      $http.post('/no-csrf', (err, res) => {
         expect(err).to.be.null;
 
         expect(res.statusCode).to.be.a('number');
@@ -186,5 +196,4 @@ describe('Fi Security', function () {
       });
     });
   });
-
 });
