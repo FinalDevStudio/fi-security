@@ -20,7 +20,7 @@
     "test": "nyc mocha --reporter list"
   },
   "dependencies": {
-    "fi-aegis": "^1.1.0",
+    "fi-aegis": "^2.0.1",
     "fi-is": "^4.0.0"
   },
   "devDependencies": {

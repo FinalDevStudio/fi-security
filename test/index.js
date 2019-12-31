@@ -12,8 +12,6 @@ const security = require('../lib');
 const config = {
   debug: false,
 
-  p3p: 'ABCDEF',
-
   csrf: {
     exclude: [
       {
