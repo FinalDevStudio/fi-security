@@ -1,0 +1,10 @@
+{
+  "cache": true,
+  "all": true,
+  "reporter": [
+    "html"
+  ],
+  "include": [
+    "lib/**/*"
+  ]
+}

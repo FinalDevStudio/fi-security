@@ -5,35 +5,36 @@
   "version": "2.0.0",
   "private": false,
   "license": "MIT",
-  "author": "Final Development Studio <sorcery@finaldevstudio.com> (http://finaldevstudio.com)",
+  "author": "DOT <hello@dotstudio.io> (http://www.dotstudio.io)",
   "contributors": [
-    "Santiago G. Marín <santiago@finaldevstudio.com>"
+    "Santiago G. Marín <santiago@dotstudio-io.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/finaldevstudio/fi-security.git"
+    "url": "git+https://github.com/dotstudio-io/fi-security.git"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --reporter list test/*.js"
+    "test": "nyc mocha --reporter list"
   },
   "dependencies": {
-    "base64url": "^3.0.0",
     "fi-aegis": "^1.1.0",
-    "fi-is": "^1.2.0"
+    "fi-is": "^4.0.0"
   },
   "devDependencies": {
-    "body-parser": "^1.18.3",
+    "base64url": "^3.0.1",
+    "body-parser": "^1.19.0",
     "chai": "^4.2.0",
-    "express": "^4.16.4",
-    "express-session": "^1.15.6",
-    "mocha": "^5.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "mocha": "^6.2.2",
+    "nyc": "^15.0.0",
     "request": "^2.88.0",
-    "tough-cookie": "^2.4.3"
+    "tough-cookie": "^3.0.1"
   },
   "bugs": {
-    "url": "https://github.com/finaldevstudio/fi-security/issues"
+    "url": "https://github.com/dotstudio-io/fi-security/issues"
   },
-  "homepage": "https://github.com/finaldevstudio/fi-security#readme",
+  "homepage": "https://github.com/dotstudio-io/fi-security#readme",
   "main": "index.js",
   "keywords": [
     "component",
