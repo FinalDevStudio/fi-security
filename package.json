@@ -13,6 +13,9 @@
     "type": "git",
     "url": "git+https://github.com/dotstudio-io/fi-security.git"
   },
+  "engines": {
+    "node": "12"
+  },
   "scripts": {
     "test": "nyc mocha --reporter list"
   },
@@ -24,6 +27,9 @@
     "base64url": "^3.0.1",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
+    "eslint-plugin-mocha": "^6.2.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-security": "^1.4.0",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "mocha": "^6.2.2",
