@@ -2,7 +2,7 @@
   "name": "fi-security",
   "title": "Fi Security",
   "description": "Security component for Node.js Express applications",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": false,
   "license": "MIT",
   "author": "DOT <hello@dotstudio.io> (http://www.dotstudio.io)",
