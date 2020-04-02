@@ -1,3 +1,7 @@
+---
+### No longer maintained.
+---
+
 # Fi Security
 
 Application security module for Node.js Express applications.
